@@ -64,6 +64,10 @@ class CourseTopicScraper:
             courseUrl = self.apiUtils.getCourseUrl(textFileUrl)
             courseApiUrl = self.apiUtils.getNextData()
             topicUrlsList = self.apiUtils.getCourseTopicUrlsList(textFileUrl, courseUrl)
+            for item in topicUrlsList:
+                if 'assessment' in item:
+                    topicUrlsList.remove(item)
+
             startIndex = topicUrlsList.index(textFileUrl) if textFileUrl in topicUrlsList else 0
             self.loginUtils.checkIfLoggedIn()
             courseCollectionsJson = self.apiUtils.getCourseCollectionsJson(courseApiUrl, courseUrl)

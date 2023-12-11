@@ -68,6 +68,7 @@ class CodeUtility:
                 self.fileUtils.createTextFile(textFilePath, solutionContent)
             codeContents = prependCode + content["content"] + appendCode
             textFilePath = os.path.join(self.codeFolderPath, f"{tabTitle}{entryFileName}.txt")
+            textFilePath = textFilePath.replace('\\','/')
             self.fileUtils.createTextFile(textFilePath, codeContents)
             if "additionalContent" in content:
                 for additionalContent in content["additionalContent"]:

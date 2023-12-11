@@ -16,6 +16,7 @@ from src.Utility.BrowserUtility import BrowserUtility
 from src.Utility.FileUtility import FileUtility
 from src.Utility.OSUtility import OSUtility
 
+
 class CourseTopicScraper:
     def __init__(self, configJson):
         self.browser = None
@@ -37,7 +38,6 @@ class CourseTopicScraper:
         self.screenshotUtils = ScreenshotUtility(configJson)
         self.printFileUtils = PrintFileUtility(configJson)
 
-
     def start(self):
         self.logger.info("ExtensionScraper initiated...")
         urlsTextFile = self.fileUtils.loadTextFile(self.configJson["courseUrlsFilePath"])
@@ -58,23 +58,23 @@ class CourseTopicScraper:
                     self.browser.quit()
         self.logger.info("ExtensionScraper completed.")
 
-
     def scrapeCourse(self, textFileUrl):
         try:
             courseUrl = self.apiUtils.getCourseUrl(textFileUrl)
             courseApiUrl = self.apiUtils.getNextData()
             topicUrlsList = self.apiUtils.getCourseTopicUrlsList(textFileUrl, courseUrl)
-            for item in topicUrlsList:
-                if 'assessment' in item:
-                    topicUrlsList.remove(item)
-
-            startIndex = topicUrlsList.index(textFileUrl) if textFileUrl in topicUrlsList else 0
-            self.loginUtils.checkIfLoggedIn()
             courseCollectionsJson = self.apiUtils.getCourseCollectionsJson(courseApiUrl, courseUrl)
             topicApiUrlList = courseCollectionsJson['topicApiUrlList']
             topicApiNameList = courseCollectionsJson["topicNameList"]
             topicApiUrlListLen = len(topicApiUrlList)
             topicUrlsListLen = len(topicUrlsList)
+            if topicApiUrlListLen != topicUrlsListLen:
+                for item in topicUrlsList:
+                    if 'assessment' in item:
+                        topicUrlsList.remove(item)
+
+            startIndex = topicUrlsList.index(textFileUrl) if textFileUrl in topicUrlsList else 0
+            self.loginUtils.checkIfLoggedIn()
 
             self.logger.debug(f"Course Topic URLs: {topicUrlsList}")
             self.logger.debug(f"Course Collections JSON: {courseCollectionsJson}")
@@ -102,7 +102,6 @@ class CourseTopicScraper:
         except Exception as e:
             lineNumber = e.__traceback__.tb_lineno
             raise Exception(f"ExtensionScraper:scrapeCourse: {lineNumber}: {e}")
-
 
     def scrapeTopic(self, coursePath, topicName, topicApiContentJson, topicUrl):
         try:

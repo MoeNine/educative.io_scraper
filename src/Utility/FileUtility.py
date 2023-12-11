@@ -86,6 +86,7 @@ class FileUtility:
 
     @staticmethod
     def createTextFile(textFilePath, data):
+        os.makedirs(os.path.dirname(textFilePath), exist_ok=True)
         with open(textFilePath, "w+", encoding="utf-8") as fh:
             fh.write(data)
 
